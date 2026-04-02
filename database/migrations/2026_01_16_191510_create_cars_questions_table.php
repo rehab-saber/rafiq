@@ -18,6 +18,12 @@ return new class extends Migration
             $table->text('question_text');
             $table->string('skill_indicator');
 
+    // section relation
+            $table->foreignId('section_id')
+                ->nullable()
+                ->constrained('sections')
+                ->cascadeOnDelete();
+
             $table->timestamps();
         });
     }
