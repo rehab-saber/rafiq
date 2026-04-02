@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('skill_indicator');
 
     // section relation
-            $table->foreignId('section_id')
-                ->nullable()
-                ->constrained('sections')
+            $table->unsignedBigInteger('section_id')->nullable();
+            $table->foreign('section_id')
+                ->references('id')
+                ->on('sections')
                 ->cascadeOnDelete();
-
+                
             $table->timestamps();
         });
     }
