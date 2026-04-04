@@ -13,6 +13,9 @@ use App\Http\Controllers\Api\CarsAnswerController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\SectionLevelController;
 use App\Http\Controllers\Api\ActivityController;
+use App\Http\Controllers\Api\PlanController;
+use App\Http\Controllers\Api\PlanActivityController;
+use App\Http\Controllers\Api\ActivityAttemptController;
 
 //doctor route
 Route::get('/doctorsShow', [DoctorController::class, 'index']);
@@ -122,3 +125,25 @@ Route::get('/ActivityShowOne/{id}', [ActivityController::class, 'show']);
 Route::post('/ActivityStore', [ActivityController::class, 'store']);
 Route::post('/ActivityUpdate', [ActivityController::class, 'update']);
 Route::delete('/ActivityDelete/{id}', [ActivityController::class, 'delete']);
+
+// Plan routes
+Route::get('plansShow', [PlanController::class, 'index']);
+Route::get('plansShowOne/{id}', [PlanController::class, 'show']);
+Route::post('plansStore', [PlanController::class, 'store']);
+Route::post('plansUpdate', [PlanController::class, 'update']);
+Route::delete('plansDelete/{id}', [PlanController::class, 'delete']);
+
+// PlanActivity routes
+
+Route::get('plan-activitiesShow', [PlanActivityController::class, 'index']);
+Route::get('plan-activitiesShowOne/{id}', [PlanActivityController::class, 'show']);
+Route::post('plan-activitiesStore', [PlanActivityController::class, 'store']);
+Route::post('plan-activitiesUpdate', [PlanActivityController::class, 'update']);
+Route::delete('plan-activitiesDelete/{id}', [PlanActivityController::class, 'delete']);
+
+//ActivityAttempt route
+Route::get('activity-attemptsShow', [ActivityAttemptController::class, 'index']);
+Route::get('activity-attemptsShowOne/{id}', [ActivityAttemptController::class, 'show']);
+Route::post('activity-attemptsStore', [ActivityAttemptController::class, 'store']);
+Route::post('activity-attemptsUpdate', [ActivityAttemptController::class, 'update']);
+Route::delete('activity-attemptsDelete/{id}', [ActivityAttemptController::class, 'delete']);
