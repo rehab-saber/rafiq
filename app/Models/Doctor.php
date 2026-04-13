@@ -20,6 +20,8 @@ class Doctor extends Authenticatable
         'clinic_name',
         'speciality',
         'role',
+        'provider_name',   // ✅ ضيفي دي
+        'provider_id', 
     ];
 
     protected $hidden = [
