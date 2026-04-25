@@ -20,11 +20,13 @@ class AuthParentsController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:parents,email',
             'password'  => 'required|string|min:8|confirmed',
+            'phone'    => 'nullable|string',
         ]);
 
         $parent = Parents::create([
             'name'     => $validated['name'],
             'email'    => $validated['email'],
+            'phone'    => $validated['phone'],
             'password' => Hash::make($validated['password']),
         ]);
 
