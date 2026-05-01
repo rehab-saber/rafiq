@@ -27,7 +27,7 @@ class CarsAnswerController extends Controller
     // ========================
     // GET BY ID
     // ========================
-    public function show($id)
+    public function show(int $id)
     {
         $answer = CarsAnswer::with(['child', 'question', 'option'])->find($id);
 
@@ -98,7 +98,7 @@ class CarsAnswerController extends Controller
             'child_id'    => 'required|exists:children,id',
             'question_id' => 'required|exists:cars_questions,id',
             'option_id'   => 'required|exists:cars_question_options,id',
-            'score'       => 'nullable|integer',
+            'score' => 'nullable|numeric',
             'severity_level' => 'nullable|string',
         ]);
 
@@ -127,7 +127,7 @@ class CarsAnswerController extends Controller
     // ========================
     // DELETE
     // ========================
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $answer = CarsAnswer::find($id);
 

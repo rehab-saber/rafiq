@@ -48,15 +48,20 @@ class AuthParentsController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email'    => 'required|string',
+            'login'    => 'required|string', // email أو phone
             'password' => 'required|string',
         ]);
 
-        $parent = Parents::where('email', $request->email)->first();
+        $input = $request->login;
+
+        // نحدد لو Email أو Phone
+        $field = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        $parent = Parents::where($field, $input)->first();
 
         if (!$parent || !Hash::check($request->password, $parent->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Email or password is incorrect'],
+                'login' => ['Email/Phone or password is incorrect'],
             ]);
         }
 
@@ -67,9 +72,9 @@ class AuthParentsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
-            'data'    => [
+            'data' => [
                 'parent' => $parent,
-                'token'  => $token,
+                'token' => $token,
             ]
         ]);
     }
@@ -144,7 +149,7 @@ class AuthParentsController extends Controller
     // =========================
     // SOCIAL LOGIN (SIGN UP/LOGIN)
     // =========================
-    public function socialLogin(Request $request, $provider)
+    public function socialLogin(Request $request, string $provider)
     {
         $request->validate([
             'name' => 'required|string',

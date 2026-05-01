@@ -54,8 +54,8 @@ class CarsQuestionOptionController extends Controller
         $validator = Validator::make($request->all(), [
             'id'          => 'required|unique:cars_question_options|max:11',
             'label'       => 'required|string',
-            'description' => 'required|string',
-            'score'       => 'required|integer',
+            'description' => 'nullable|string',
+            'score' => 'required|numeric',
             'question_id' => 'required|exists:cars_questions,id',
         ]);
 

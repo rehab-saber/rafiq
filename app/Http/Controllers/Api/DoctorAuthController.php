@@ -49,15 +49,20 @@ class DoctorAuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email'    => 'required|string',
+            'login'    => 'required|string', // email أو phone
             'password' => 'required|string',
         ]);
 
-        $doctor = Doctor::where('email', $request->email)->first();
+        $input = $request->login;
+
+        // تحديد هل Email أو Phone
+        $field = filter_var($input, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        $doctor = Doctor::where($field, $input)->first();
 
         if (!$doctor || !Hash::check($request->password, $doctor->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Email or password is incorrect'],
+                'login' => ['Email/Phone or password is incorrect'],
             ]);
         }
 
@@ -102,7 +107,7 @@ class DoctorAuthController extends Controller
     // =========================
     // SOCIAL LOGIN (SIGN UP / LOGIN)
     // =========================
-    public function socialLogin(Request $request, $provider)
+    public function socialLogin(Request $request, string $provider)
     {
         $request->validate([
             'name'        => 'required|string',
