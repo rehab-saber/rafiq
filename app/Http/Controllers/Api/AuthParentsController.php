@@ -149,7 +149,7 @@ class AuthParentsController extends Controller
     // =========================
     // SOCIAL LOGIN (SIGN UP/LOGIN)
     // =========================
-    public function socialLogin(Request $request, string $provider)
+    public function socialLogin(Request $request, $provider)
     {
         $request->validate([
             'name' => 'required|string',
