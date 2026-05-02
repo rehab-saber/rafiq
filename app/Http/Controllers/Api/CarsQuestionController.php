@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CarsQuestion;
+use App\Models\CarsQuestionOption; // 👈 مهم
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class CarsQuestionController extends Controller
     // ========================
     public function index()
     {
-        $questions = CarsQuestion::all();
+        $questions = CarsQuestion::with('options')->get(); // 👈 نجيب options معاه
 
         return response()->json([
             'msg' => 'Return all cars questions',
@@ -29,7 +30,7 @@ class CarsQuestionController extends Controller
     // ========================
     public function show($id)
     {
-        $question = CarsQuestion::find($id);
+        $question = CarsQuestion::with('options')->find($id);
 
         if ($question) {
             return response()->json([
@@ -47,7 +48,7 @@ class CarsQuestionController extends Controller
     }
 
     // ========================
-    // STORE
+    // STORE (🔥 هنا السحر)
     // ========================
     public function store(Request $request)
     {
@@ -56,7 +57,7 @@ class CarsQuestionController extends Controller
             'title'            => 'nullable|string',
             'question_text'    => 'required|string',
             'skill_indicator'  => 'required|string',
-            'section_id'       => 'required|exists:sections,id', // <-- اضفنا هذا
+            'section_id'       => 'required|exists:sections,id',
         ]);
 
         if ($validator->fails()) {
@@ -64,16 +65,74 @@ class CarsQuestionController extends Controller
                 'msg' => 'Validation errors',
                 'status' => 422,
                 'errors' => $validator->errors()
-            ], 422, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            ], 422);
         }
 
-        $question = CarsQuestion::create($request->all());
+        DB::beginTransaction();
 
-        return response()->json([
-            'msg' => 'Question created successfully',
-            'status' => 201,
-            'question' => $question
-        ], 201, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        try {
+
+            $question = CarsQuestion::create($request->all());
+
+            // ==============================
+            // 🟢 OPTIONS CONFIG
+            // ==============================
+
+            if ($question->skill_indicator == 'Parent Impression') {
+
+                $options = [
+                    ['label' => 'Normal Development', 'score' => 1],
+                    ['label' => 'Mild Concerns', 'score' => 2],
+                    ['label' => 'Moderate Concerns', 'score' => 3],
+                    ['label' => 'Major Concerns', 'score' => 4],
+                ];
+
+            } else {
+
+                $options = [
+                    ['label' => 'Completely Normal', 'score' => 1],
+                    ['label' => 'Normal with Minor Notes', 'score' => 1.5],
+                    ['label' => 'Mildly Abnormal', 'score' => 2],
+                    ['label' => 'Clearly Abnormal but Mild', 'score' => 2.5],
+                    ['label' => 'Above Moderately Abnormal', 'score' => 3],
+                    ['label' => 'Severely Abnormal', 'score' => 3.5],
+                    ['label' => 'Very Severe', 'score' => 4],
+                ];
+            }
+
+            // ==============================
+            // 🟢 INSERT OPTIONS
+            // ==============================
+
+            foreach ($options as $index => $option) {
+                CarsQuestionOption::create([
+                    'id' => ($question->id * 10) + $index + 1,
+                    'question_id' => $question->id,
+                    'label' => $option['label'],
+                    'description' => '-',
+                    'score' => $option['score'],
+                    'order' => $index + 1
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'msg' => 'Question created successfully',
+                'status' => 201,
+                'question' => $question
+            ]);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'msg' => 'Error occurred',
+                'status' => 500,
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     // ========================
@@ -97,7 +156,7 @@ class CarsQuestionController extends Controller
             'title'            => 'nullable|string',
             'question_text'    => 'required|string',
             'skill_indicator'  => 'required|string',
-            'section_id'       => 'required|exists:sections,id', // <-- اضفنا هذا
+            'section_id'       => 'required|exists:sections,id',
         ]);
 
         if ($validator->fails()) {
@@ -112,7 +171,7 @@ class CarsQuestionController extends Controller
             ->where('id', $old_id)
             ->update($request->except('old_id'));
 
-        $updatedQuestion = CarsQuestion::find($request->id);
+        $updatedQuestion = CarsQuestion::with('options')->find($request->id);
 
         return response()->json([
             'msg' => 'Question updated successfully',

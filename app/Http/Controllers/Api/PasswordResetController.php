@@ -9,7 +9,8 @@ use App\Models\Doctor;
 use App\Models\Parents;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
-
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\OtpNotification;
 class PasswordResetController extends Controller
 {
     // =========================
@@ -59,10 +60,11 @@ class PasswordResetController extends Controller
             ]
         );
 
+        Notification::send($user, new OtpNotification($otp));
+
         return response()->json([
             'success' => true,
-            'message' => 'OTP sent successfully',
-            'otp' => $otp // ⚠️ امسحيه في الإنتاج
+            'message' => 'OTP sent to your email successfully'
         ]);
     }
 
@@ -196,10 +198,10 @@ class PasswordResetController extends Controller
             ]
         );
 
+        Notification::send($user, new OtpNotification($otp));
         return response()->json([
             'success' => true,
-            'message' => 'OTP resent successfully',
-            'otp' => $otp // ⚠️ امسحيه في الإنتاج
+            'message' => 'OTP resent to your email successfully'
         ]);
     }
 }

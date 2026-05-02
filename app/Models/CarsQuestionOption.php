@@ -21,6 +21,7 @@ class CarsQuestionOption extends Model
         'description',
         'score',
         'question_id',
+        'order',
     ];
 
     // ================= Relations =================
