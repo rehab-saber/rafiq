@@ -56,7 +56,7 @@ class CarsAnswerController extends Controller
             'child_id'    => 'required|exists:children,id',
             'question_id' => 'required|exists:cars_questions,id',
             'option_id'   => 'required|exists:cars_question_options,id',
-            'score'       => 'nullable|integer',
+            'score'       => 'nullable|numeric',
             'severity_level' => 'nullable|string',
         ]);
 
