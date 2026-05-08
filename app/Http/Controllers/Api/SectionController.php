@@ -7,7 +7,7 @@ use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\SectionLevel;
 class SectionController extends Controller
 {
     // =========================
@@ -53,7 +53,6 @@ class SectionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            // اضيفي أي شروط تانية حسب عمود الـ Section
         ]);
 
         if ($validator->fails()) {
@@ -61,16 +60,70 @@ class SectionController extends Controller
                 'msg' => 'Validation errors',
                 'status' => 422,
                 'errors' => $validator->errors()
-            ], 422, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            ], 422);
         }
 
-        $section = Section::create($request->all());
+        DB::beginTransaction();
 
-        return response()->json([
-            'msg' => 'Section created successfully',
-            'status' => 201,
-            'section' => $section
-        ], 201, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        try {
+
+            // 1️⃣ Create Section
+            $section = Section::create($request->all());
+
+            // 2️⃣ Create Levels automatically except special section
+            if ($section->name != 'Overall Parent Impression') {
+
+                $levels = [
+                    [
+                        'name' => 'Level 1',
+                        'description' => 'Basic level',
+                        'level_number' => 1
+                    ],
+                    [
+                        'name' => 'Level 2',
+                        'description' => 'Intermediate level',
+                        'level_number' => 2
+                    ],
+                    [
+                        'name' => 'Level 3',
+                        'description' => 'Advanced level',
+                        'level_number' => 3
+                    ],
+                    [
+                        'name' => 'Level 4',
+                        'description' => 'Final level',
+                        'level_number' => 4
+                    ],
+                ];
+
+                foreach ($levels as $level) {
+                    SectionLevel::create([
+                        'name' => $level['name'],
+                        'description' => $level['description'],
+                        'level_number' => $level['level_number'],
+                        'section_id' => $section->id
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'msg' => 'Section created successfully',
+                'status' => 201,
+                'section' => $section->load('levels')
+            ], 201);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'msg' => 'Something went wrong',
+                'status' => 500,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // =========================

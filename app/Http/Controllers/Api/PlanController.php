@@ -52,7 +52,7 @@ class PlanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required|exists:doctors,id',
+            'doctor_id' => 'nullable|exists:doctors,id',
             'child_id'  => 'required|exists:children,id',
             'source'    => 'required|string|max:255',
         ]);
@@ -91,7 +91,7 @@ class PlanController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required|exists:doctors,id',
+            'doctor_id' => 'nullable|exists:doctors,id',
             'child_id'  => 'required|exists:children,id',
             'source'    => 'required|string|max:255',
         ]);

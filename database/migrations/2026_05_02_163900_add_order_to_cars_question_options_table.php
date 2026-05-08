@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasColumn('cars_question_options', 'order')) {
         Schema::table('cars_question_options', function (Blueprint $table) {
             $table->integer('order')->default(0);
         });
+        }
     }
 
     public function down(): void

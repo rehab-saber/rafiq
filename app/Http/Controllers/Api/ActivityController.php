@@ -63,14 +63,13 @@ class ActivityController extends Controller
 
             'type' => 'required|in:game,image,audio,video,article',
 
-            'media_type' => 'required_if:type,image,audio,video|nullable|in:image,audio,video',
+            'media_type' => 'sometimes|nullable|in:image,audio,video',
 
-            'media_path' => 'required_if:type,image,audio,video|nullable|string|max:255',
+            'media_path' => 'sometimes|nullable|string|max:255',
 
-            'duration' => 'required_if:type,video,audio|nullable|integer|min:1',
+            'duration' => 'sometimes|nullable|integer|min:1',
 
-            'max_score' => 'required_if:type,game|nullable|integer|min:1',
-
+            'max_score' => 'sometimes|nullable|integer|min:1',
             'section_level_id' => 'required|exists:section_levels,id',
         ]);
 
@@ -112,24 +111,21 @@ class ActivityController extends Controller
 
         $validator = Validator::make($request->all(), [
 
-            'id' => 'required|integer|unique:activities,id,' . $old_id,
-
             'title' => 'required|string|max:255',
 
             'description' => 'nullable|string',
 
             'type' => 'required|in:game,image,audio,video,article',
 
-            'media_type' => 'required_if:type,image,audio,video|nullable|in:image,audio,video',
+            'media_type' => 'sometimes|nullable|in:image,audio,video',
 
-            'media_path' => 'required_if:type,image,audio,video|nullable|string|max:255',
+            'media_path' => 'sometimes|nullable|string|max:255',
 
-            'duration' => 'required_if:type,video,audio|nullable|integer|min:1',
+            'duration' => 'sometimes|nullable|integer|min:1',
 
-            'max_score' => 'required_if:type,game|nullable|integer|min:1',
+            'max_score' => 'sometimes|nullable|integer|min:1',
 
             'section_level_id' => 'required|exists:section_levels,id',
-
         ]);
 
         if ($validator->fails()) {

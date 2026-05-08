@@ -19,8 +19,13 @@ class ActivityAttempt extends Model
         'activity_id',
         'score',
         'status',
+        'result',
         'attempt_number',
         'completed_at',
+        'started_at',
+        'difficulty',
+        'mood',
+        'rating',
     ];
 
     /* ================= Relations ================= */
