@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('activity_attempts', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'in_progress', 'completed'])
-                ->default('pending')
-                ->change();
-        });
+            $table->string('status')
+                    ->default('pending')
+                    ->change();
+                        });
     }
 
     public function down(): void
