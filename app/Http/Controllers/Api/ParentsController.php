@@ -58,7 +58,8 @@ class ParentsController extends Controller
             'phone'     => 'nullable|string|max:20',
             'password'  => 'required|min:6',
             'doctor_id' => 'nullable|exists:doctors,id',
-            'status'    => 'nullable|in:active,blocked'
+            'status'    => 'nullable|in:active,blocked',
+            'city'      => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -75,7 +76,8 @@ class ParentsController extends Controller
             'phone'     => $request->phone,
             'password'  => Hash::make($request->password),
             'doctor_id' => $request->doctor_id,
-            'status'    => $request->status ?? 'active'
+            'status'    => $request->status ?? 'active',
+            'city'      => $request->city,
         ]);
 
         return response()->json([
@@ -108,7 +110,8 @@ class ParentsController extends Controller
             'phone'     => 'nullable|string|max:20',
             'password'  => 'nullable|min:6',
             'doctor_id' => 'nullable|exists:doctors,id',
-            'status'    => 'nullable|in:active,blocked'
+            'status'    => 'nullable|in:active,blocked',
+            'city'      => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -129,6 +132,7 @@ class ParentsController extends Controller
                 'doctor_id' => $request->doctor_id,
                 'status'    => $request->status ?? 'active',
                 'password'  => $request->password ? Hash::make($request->password) : $parent->password,
+                'city'      => $request->city,
             ]);
 
         $updatedParent = Parents::with('doctor')->find($request->id);

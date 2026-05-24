@@ -9,12 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('children', function (Blueprint $table) {
-            $table->id(); // auto increment
+
+            $table->id();
 
             $table->string('name');
+
             $table->enum('gender', ['male', 'female']);
+
             $table->integer('age');
+
             $table->integer('autism_level')->nullable();
+
+            $table->string('photo')->nullable();
+
+            $table->integer('daily_session_goal')->default(30);
+
+            $table->time('reminder_time')->nullable();
 
             $table->unsignedBigInteger('parent_id');
 

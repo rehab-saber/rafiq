@@ -52,13 +52,24 @@ class DoctorController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id'          => 'required|unique:doctors,id',
-            'name'        => 'required|string',
-            'email'       => 'required|email|unique:doctors,email',
-            'password'    => 'required|min:6',
-            'phone'       => 'nullable|string',
-            'clinic_name' => 'nullable|string',
-            'speciality'  => 'nullable|string'
+            'id'                  => 'required|unique:doctors,id',
+            'name'                => 'required|string',
+            'email'               => 'required|email|unique:doctors,email',
+            'password'            => 'required|min:6',
+
+            'phone'               => 'nullable|string',
+            'clinic_name'         => 'nullable|string',
+            'speciality'          => 'nullable|array',
+
+            'city'                => 'nullable|string',
+            'about'               => 'nullable|string',
+            'years_of_exp'        => 'nullable|integer',
+            'clinic_address'      => 'nullable|string',
+            'photo'               => 'nullable|string',
+            'consultation_price'  => 'nullable|numeric',
+
+            'provider_name'       => 'nullable|string',
+            'provider_id'         => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -70,14 +81,26 @@ class DoctorController extends Controller
         }
 
         $doctor = Doctor::create([
-            'id'          => $request->id,
-            'name'        => $request->name,
-            'email'       => $request->email,
-            'password'    => bcrypt($request->password),
-            'phone'       => $request->phone,
-            'clinic_name' => $request->clinic_name,
-            'speciality'  => $request->speciality,
-            'role'        => 'doctor'
+            'id'                  => $request->id,
+            'name'                => $request->name,
+            'email'               => $request->email,
+            'password'            => bcrypt($request->password),
+
+            'phone'               => $request->phone,
+            'clinic_name'         => $request->clinic_name,
+            'speciality'          => $request->speciality,
+
+            'city'                => $request->city,
+            'about'               => $request->about,
+            'years_of_exp'        => $request->years_of_exp,
+            'clinic_address'      => $request->clinic_address,
+            'photo'               => $request->photo,
+            'consultation_price'  => $request->consultation_price,
+
+            'provider_name'       => $request->provider_name,
+            'provider_id'         => $request->provider_id,
+
+            'role'                => 'doctor'
         ]);
 
         return response()->json([
@@ -92,8 +115,8 @@ class DoctorController extends Controller
     // =========================
     public function update(Request $request)
     {
-        // old id
         $old_id = $request->old_id;
+
         $doctor = Doctor::find($old_id);
 
         if (!$doctor) {
@@ -105,13 +128,25 @@ class DoctorController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'id'          => 'required|unique:doctors,id,' . $old_id,
-            'name'        => 'required|string',
-            'email'       => 'required|email|unique:doctors,email,' . $old_id,
-            'phone'       => 'nullable|string',
-            'clinic_name' => 'nullable|string',
-            'speciality'  => 'nullable|string',
-            'password'    => 'nullable|min:6'
+            'id'                  => 'required|unique:doctors,id,' . $old_id,
+            'name'                => 'required|string',
+            'email'               => 'required|email|unique:doctors,email,' . $old_id,
+
+            'phone'               => 'nullable|string',
+            'clinic_name'         => 'nullable|string',
+            'speciality'          => 'nullable|array',
+
+            'city'                => 'nullable|string',
+            'about'               => 'nullable|string',
+            'years_of_exp'        => 'nullable|integer',
+            'clinic_address'      => 'nullable|string',
+            'photo'               => 'nullable|string',
+            'consultation_price'  => 'nullable|numeric',
+
+            'provider_name'       => 'nullable|string',
+            'provider_id'         => 'nullable|string',
+
+            'password'            => 'nullable|min:6'
         ]);
 
         if ($validator->fails()) {
@@ -122,17 +157,28 @@ class DoctorController extends Controller
             ], 422, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
 
-        // update using query builder
         DB::table('doctors')
             ->where('id', $old_id)
             ->update([
-                'id'          => $request->id,
-                'name'        => $request->name,
-                'email'       => $request->email,
-                'phone'       => $request->phone,
-                'clinic_name' => $request->clinic_name,
-                'speciality'  => $request->speciality,
-                'password'    => $request->password
+                'id'                  => $request->id,
+                'name'                => $request->name,
+                'email'               => $request->email,
+
+                'phone'               => $request->phone,
+                'clinic_name'         => $request->clinic_name,
+                'speciality'          => json_encode($request->speciality),
+
+                'city'                => $request->city,
+                'about'               => $request->about,
+                'years_of_exp'        => $request->years_of_exp,
+                'clinic_address'      => $request->clinic_address,
+                'photo'               => $request->photo,
+                'consultation_price'  => $request->consultation_price,
+
+                'provider_name'       => $request->provider_name,
+                'provider_id'         => $request->provider_id,
+
+                'password' => $request->password
                     ? bcrypt($request->password)
                     : $doctor->password,
             ]);

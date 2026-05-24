@@ -22,6 +22,10 @@ class Child extends Model
         'age',
         'autism_level',
         'parent_id',
+        'photo',
+        'daily_session_goal',
+        'reminder_time',
+
     ];
 
     // ================= Relations =================

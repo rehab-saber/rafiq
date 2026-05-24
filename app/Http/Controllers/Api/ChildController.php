@@ -57,6 +57,7 @@ class ChildController extends Controller
             'gender'        => 'required|in:male,female',
             'age'           => 'required|integer',
             'autism_level'  => 'nullable|integer',
+            'photo'         => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'parent_id'     => 'required|exists:parents,id',
         ]);
 
@@ -99,6 +100,7 @@ class ChildController extends Controller
             'gender'        => 'required|in:male,female',
             'age'           => 'required|integer',
             'autism_level'  => 'nullable|integer',
+            'photo'         => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'parent_id'     => 'required|exists:parents,id',
         ]);
 

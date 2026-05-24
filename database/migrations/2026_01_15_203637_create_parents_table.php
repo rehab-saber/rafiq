@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamp('created_at')->nullable();
             $table->string('provider_name')->nullable(); // google أو facebook
             $table->string('provider_id')->nullable();   // id اللي جاي من Google/Facebook
+            $table->string('city')->nullable();
 
         });
     }

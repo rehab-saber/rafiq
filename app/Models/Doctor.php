@@ -22,6 +22,13 @@ class Doctor extends Authenticatable
         'role',
         'provider_name',   // ✅ ضيفي دي
         'provider_id', 
+        'city',
+        'about',
+        'years_of_exp',
+        'clinic_address',
+        'photo',
+        'consultation_price',
+
     ];
 
     protected $hidden = [
@@ -31,5 +38,11 @@ class Doctor extends Authenticatable
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'speciality' => 'array',
     ];
+
+    public function complaints()
+    {
+        return $this->morphMany(Complaint::class, 'sender');
+    }
 }

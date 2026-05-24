@@ -20,6 +20,7 @@ class AuthParentsController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|unique:parents,email',
             'password'  => 'required|string|min:8|confirmed',
+            'city'     => 'required|string|max:255',
             'phone'    => 'nullable|string',
         ]);
 
@@ -27,6 +28,7 @@ class AuthParentsController extends Controller
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'phone'    => $validated['phone'],
+            'city'     => $validated['city'],
             'password' => Hash::make($validated['password']),
         ]);
 
@@ -111,6 +113,7 @@ class AuthParentsController extends Controller
         $request->validate([
             'passcode' => 'required|string',
             'parent_name' => 'required|string|max:255',
+            'email'       => 'required|email',
         ]);
 
         $passcode = ParentPasscode::where('code', $request->passcode)
@@ -126,7 +129,7 @@ class AuthParentsController extends Controller
 
         $parent = Parents::create([
             'name'      => $request->parent_name,
-            'email'     => null,
+            'email'     => $request->email,
             'password'  => Hash::make('temporary_password'),
             'doctor_id' => $passcode->doctor_id,
         ]);

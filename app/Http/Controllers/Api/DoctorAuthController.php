@@ -19,6 +19,8 @@ class DoctorAuthController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:doctors,email',
             'password' => 'required|string|min:8|confirmed',
+            'city'     => 'required|string|max:255',
+            'speciality' => 'nullable',
         ]);
 
         $doctor = Doctor::create([
@@ -27,7 +29,8 @@ class DoctorAuthController extends Controller
             'password'    => Hash::make($validated['password']),
             'phone'       => $request->phone,
             'clinic_name' => $request->clinic_name,
-            'speciality'  => $request->speciality,
+            'city'        => $validated['city'],
+            'speciality'  => $validated['speciality'] ?? [],
             'role'        => 'doctor',
         ]);
 

@@ -20,7 +20,8 @@ class Parents extends Authenticatable
         'doctor_id',
         'status',
         'provider_name',
-        'provider_id', 
+        'provider_id',
+        'city',
     ];
 
     protected $hidden = [
@@ -35,5 +36,15 @@ class Parents extends Authenticatable
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+    public function complaints()
+    {
+        return $this->morphMany(Complaint::class, 'sender');
+    }
+    // ✅ Bookmark
+    public function bookmarkedArticles()
+    {
+        return $this->belongsToMany(Article::class, 'article_bookmarks', 'parent_id', 'article_id')
+                    ->withTimestamps();
     }
 }

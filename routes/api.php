@@ -19,7 +19,11 @@ use App\Http\Controllers\Api\ActivityAttemptController;
 use App\Http\Controllers\Api\TranslationController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Api\PasswordResetController;
-
+use App\Http\Controllers\Api\ComplaintController;
+use App\Http\Controllers\Api\SocialStoryController;
+use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\DoctorAvailabilityController;
 
 Route::group(
 [
@@ -163,4 +167,70 @@ Route::group(
     Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp']);
     Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
     Route::post('/resend-otp', [PasswordResetController::class, 'resendOtp']);
+
+    // ========================
+    // Complaints Routes
+    // ========================
+
+    Route::get('/complaints', [ComplaintController::class, 'index']);
+    Route::get('/complaints/{id}', [ComplaintController::class, 'show']);
+    Route::post('/complaintStore', [ComplaintController::class, 'store']);
+    Route::post('/complaintUpdate', [ComplaintController::class, 'update']);
+    Route::delete('/complaintDelete/{id}', [ComplaintController::class, 'delete']);
+
+    
+    // Article routes
+    Route::get('/ArticleShow', [ArticleController::class, 'index']);
+    Route::get('/ArticleShowOne/{id}', [ArticleController::class, 'show']);
+    Route::get('/ArticleShowBySection/{section_id}', [ArticleController::class, 'getBySection']);
+    Route::post('/ArticleStore', [ArticleController::class, 'store']);
+    Route::post('/ArticleUpdate', [ArticleController::class, 'update']);
+    Route::delete('/ArticleDelete/{id}', [ArticleController::class, 'delete']);
+
+    // ✅ Bookmark routes — محتاج login
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/ArticleBookmark/{article_id}', [ArticleController::class, 'toggleBookmark']);
+        Route::get('/ArticleBookmarks', [ArticleController::class, 'myBookmarks']);
+    });
+
+
+    // ========================= Social Story routes =========================
+    Route::get('/StoryShow', [SocialStoryController::class, 'index']);
+    Route::get('/StoryShowOne/{id}', [SocialStoryController::class, 'show']);
+    Route::get('/StoryShowBySection/{section_id}', [SocialStoryController::class, 'getBySection']);
+    Route::post('/StoryStore', [SocialStoryController::class, 'store']);
+    Route::post('/StoryUpdate', [SocialStoryController::class, 'update']);
+    Route::delete('/StoryDelete/{id}', [SocialStoryController::class, 'delete']);
+    Route::get('/StorySearch', [SocialStoryController::class, 'search']);
+
+    // ========================
+    // Booking routes
+    // ========================
+
+    Route::get('/BookingShow',[BookingController::class, 'index']);
+    Route::get('/BookingShowOne/{id}',[BookingController::class, 'show']);
+    Route::post('/BookingStore',[BookingController::class, 'store']);
+    Route::post('/BookingUpdate/{id}',[BookingController::class, 'update']);
+    Route::post('/BookingCancle/{id}',[BookingController::class, 'canacle']);
+    Route::delete('/BookingDelete/{id}',[BookingController::class, 'delete']);
+
+    // ========================
+    // Booking extra actions
+    // ========================
+
+    Route::get('/BookingAvailableSlots/{doctorId}',[BookingController::class, 'availableSlots']);
+    Route::post('/BookingConfirm/{id}',[BookingController::class, 'confirmBooking']);
+    Route::post('/BookingReject/{id}',[BookingController::class, 'rejectBooking']);
+    Route::post('/BookingComplete/{id}',[BookingController::class, 'completeBooking']);
+
+    // ========================
+    // Doctor Availability routes
+    // ========================
+
+    Route::get('/AvailabilityShow',[DoctorAvailabilityController::class, 'index']);
+    Route::get('/AvailabilityShowOne/{id}',[DoctorAvailabilityController::class, 'show']);
+    Route::post('/AvailabilityStore',[DoctorAvailabilityController::class, 'store']);
+    Route::post('/AvailabilityUpdate',[DoctorAvailabilityController::class, 'update']);
+    Route::delete('/AvailabilityDelete/{id}',[DoctorAvailabilityController::class, 'delete']);
+
 });

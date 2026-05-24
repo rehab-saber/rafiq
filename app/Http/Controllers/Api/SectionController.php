@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\SectionLevel;
+
 class SectionController extends Controller
 {
     // =========================
@@ -52,7 +53,9 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'color'       => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -66,42 +69,22 @@ class SectionController extends Controller
         DB::beginTransaction();
 
         try {
-
-            // 1️⃣ Create Section
             $section = Section::create($request->all());
 
-            // 2️⃣ Create Levels automatically except special section
-            if ($section->name != 'Overall Parent Impression') {
-
+            if ($section->name != 'Overall Parent Impression' && $section->name != 'Daily Living') {
                 $levels = [
-                    [
-                        'name' => 'Level 1',
-                        'description' => 'Basic level',
-                        'level_number' => 1
-                    ],
-                    [
-                        'name' => 'Level 2',
-                        'description' => 'Intermediate level',
-                        'level_number' => 2
-                    ],
-                    [
-                        'name' => 'Level 3',
-                        'description' => 'Advanced level',
-                        'level_number' => 3
-                    ],
-                    [
-                        'name' => 'Level 4',
-                        'description' => 'Final level',
-                        'level_number' => 4
-                    ],
+                    ['name' => 'Level 1', 'description' => 'Basic level',        'level_number' => 1],
+                    ['name' => 'Level 2', 'description' => 'Intermediate level', 'level_number' => 2],
+                    ['name' => 'Level 3', 'description' => 'Advanced level',     'level_number' => 3],
+                    ['name' => 'Level 4', 'description' => 'Final level',        'level_number' => 4],
                 ];
 
                 foreach ($levels as $level) {
                     SectionLevel::create([
-                        'name' => $level['name'],
-                        'description' => $level['description'],
+                        'name'         => $level['name'],
+                        'description'  => $level['description'],
                         'level_number' => $level['level_number'],
-                        'section_id' => $section->id
+                        'section_id'   => $section->id
                     ]);
                 }
             }
@@ -109,19 +92,18 @@ class SectionController extends Controller
             DB::commit();
 
             return response()->json([
-                'msg' => 'Section created successfully',
-                'status' => 201,
+                'msg'     => 'Section created successfully',
+                'status'  => 201,
                 'section' => $section->load('levels')
             ], 201);
 
         } catch (\Exception $e) {
-
             DB::rollBack();
 
             return response()->json([
-                'msg' => 'Something went wrong',
+                'msg'    => 'Something went wrong',
                 'status' => 500,
-                'error' => $e->getMessage()
+                'error'  => $e->getMessage()
             ], 500);
         }
     }
@@ -131,26 +113,27 @@ class SectionController extends Controller
     // =========================
     public function update(Request $request)
     {
-        $old_id = $request->old_id;
+        $old_id  = $request->old_id;
         $section = Section::find($old_id);
 
         if (!$section) {
             return response()->json([
-                'msg' => 'Section not found',
-                'status' => 404,
+                'msg'     => 'Section not found',
+                'status'  => 404,
                 'section' => null
             ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
 
         $validator = Validator::make($request->all(), [
-            'id'   => 'required|unique:sections,id,' . $old_id,
-            'name' => 'required|string|max:255',
-            // اضيفي أي شروط تانية حسب عمود الـ Section
+            'id'          => 'required|unique:sections,id,' . $old_id,
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'color'       => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'msg' => 'Validation errors',
+                'msg'    => 'Validation errors',
                 'status' => 422,
                 'errors' => $validator->errors()
             ], 422, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -159,16 +142,17 @@ class SectionController extends Controller
         DB::table('sections')
             ->where('id', $old_id)
             ->update([
-                'id'   => $request->id,
-                'name' => $request->name,
-                // أي أعمدة تانية حسب الجدول
+                'id'          => $request->id,
+                'name'        => $request->name,
+                'description' => $request->description,
+                'color'       => $request->color,
             ]);
 
         $updatedSection = Section::with('levels')->find($request->id);
 
         return response()->json([
-            'msg' => 'Section updated successfully',
-            'status' => 200,
+            'msg'     => 'Section updated successfully',
+            'status'  => 200,
             'section' => $updatedSection
         ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
@@ -182,8 +166,8 @@ class SectionController extends Controller
 
         if (!$section) {
             return response()->json([
-                'msg' => 'Section not found',
-                'status' => 404,
+                'msg'     => 'Section not found',
+                'status'  => 404,
                 'section' => null
             ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
@@ -191,8 +175,8 @@ class SectionController extends Controller
         $section->delete();
 
         return response()->json([
-            'msg' => 'Section deleted successfully',
-            'status' => 200,
+            'msg'     => 'Section deleted successfully',
+            'status'  => 200,
             'section' => null
         ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
