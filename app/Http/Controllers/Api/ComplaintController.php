@@ -151,10 +151,19 @@ class ComplaintController extends Controller
         // ========================
 
         
-        Mail::raw($request->message, function ($mail) use ($request) {
+        Mail::raw($request->message, function ($mail) use ($request, $screenshotPath) {
 
             $mail->to('rehabsaber3333@gmail.com')
                 ->subject($request->subject);
+
+            if ($screenshotPath) {
+                $mail->attach(
+                    storage_path('app/public/' . $screenshotPath),
+                    [
+                        'as' => $request->file('screenshot')->getClientOriginalName()
+                    ]
+                );
+            }
         });
         
 
