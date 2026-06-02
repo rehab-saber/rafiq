@@ -143,6 +143,42 @@ class ParentsController extends Controller
             'parent' => $updatedParent
         ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
+    // =========================
+    // CHANGE PASSWORD
+    // =========================
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:parents,id',
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|different:old_password|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'msg' => 'Validation errors',
+                'status' => 422,
+                'errors' => $validator->errors()
+            ], 422, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
+
+        $parent = Parents::find($request->id);
+
+        if (!Hash::check($request->old_password, $parent->password)) {
+            return response()->json([
+                'msg' => 'Old password is incorrect',
+                'status' => 401
+            ], 401, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
+
+        $parent->password = Hash::make($request->new_password);
+        $parent->save();
+
+        return response()->json([
+            'msg' => 'Password changed successfully',
+            'status' => 200
+        ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
 
     // =========================
     // DELETE PARENT

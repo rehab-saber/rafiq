@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
 {
@@ -189,6 +190,42 @@ class DoctorController extends Controller
             'msg' => 'Doctor updated successfully',
             'status' => 200,
             'doctor' => $updatedDoctor
+        ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+    // =========================
+    // CHANGE PASSWORD
+    // =========================
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:doctors,id',
+            'old_password' => 'required',
+            'new_password' => 'required|min:6|different:old_password|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'msg' => 'Validation errors',
+                'status' => 422,
+                'errors' => $validator->errors()
+            ], 422, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
+
+        $doctor = Doctor::find($request->id);
+
+        if (!Hash::check($request->old_password, $doctor->password)) {
+            return response()->json([
+                'msg' => 'Old password is incorrect',
+                'status' => 401
+            ], 401, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        }
+
+        $doctor->password = bcrypt($request->new_password);
+        $doctor->save();
+
+        return response()->json([
+            'msg' => 'Password changed successfully',
+            'status' => 200
         ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 

@@ -37,6 +37,7 @@ Route::group(
     Route::post('/doctorsStore', [DoctorController::class, 'store']);
     Route::post('/doctorsUpdate', [DoctorController::class, 'update']);
     Route::delete('/doctorsDelete/{id}', [DoctorController::class, 'delete']);
+    Route::post('/doctorchange-password', [DoctorController::class, 'changePassword']);
 
     //doctor Auth route
     Route::prefix('doctor')->group(function () {
@@ -68,6 +69,7 @@ Route::group(
     Route::post('/parentsStore', [ParentsController::class, 'store']);
     Route::post('/parentsUpdate', [ParentsController::class, 'update']);
     Route::delete('/parentsDelete/{id}', [ParentsController::class, 'delete']);
+    Route::post('/parentschange-password', [ParentsController::class, 'changePassword']);
 
     // Parent Auth route
     Route::prefix('parents')->group(function () {
