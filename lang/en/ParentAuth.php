@@ -33,6 +33,8 @@ return [
     'email_hint'            => 'Example@gmail.com',
     'phone'                 => 'Phone Number',
     'phone_hint'            => 'Enter your phone number',
+    'city'                  => 'City',
+    'city_hint'             => 'Select your city',
     'confirm_password'      => 'Confirm Password',
     'confirm_password_hint' => 'Re-enter your password',
     'agree_terms'           => 'I agree to the Terms & Conditions and Privacy Policy',
@@ -42,7 +44,7 @@ return [
     'login'                 => 'Login',
     'create_account_btn'    => 'Create Account',
 
-    // ── Passcode (Parent 2) ───────────────────────────
+    // ── Passcode ──────────────────────────────────────
     'have_doctor_passcode'      => 'Have a Doctor\'s Passcode?',
     'have_doctor_passcode_desc' => 'Enter the passcode provided by your doctor to get instant access',
     'enter_passcode'            => 'Enter Passcode',
@@ -50,8 +52,29 @@ return [
     'passcode_case_sensitive'   => 'Passcode is case sensitive',
     'parent_name_passcode'      => 'Parent Name',
     'parent_name_passcode_hint' => 'Your full name',
+    'email_passcode'            => 'Email',
+    'email_passcode_hint'       => 'Example@gmail.com',
+    'phone_passcode'            => 'Phone Number',
+    'phone_passcode_hint'       => 'Enter your phone number',
     'continue_with_passcode'    => 'Continue with Passcode',
     'no_account_passcode'       => "Don't have an account?",
     'create_account_passcode'   => 'Create Account',
+
+    // ── Passcode Request Status ───────────────────────
+    'pending_title'       => 'Waiting for doctor response',
+    'pending_desc'        => 'Your account is pending doctor approval to view the plan.',
+    'cancel_request'      => 'Cancel Request',
+
+    'accepted_title'      => 'Entry request confirmed',
+    'accepted_desc'       => 'Dr. :name has accepted your request. Now you have access to the plan!',
+    'go_to_plan'          => 'Go to Plan',
+
+    'rejected_title'      => 'Request declined',
+    'rejected_desc'       => 'The doctor did not approve your request. Please contact them for a new passcode.',
+    'go_back'             => 'Go back',
+
+    // ── Date & Time labels (in status screens) ────────
+    'date'                => 'Date',
+    'time'                => 'Time',
 
 ];

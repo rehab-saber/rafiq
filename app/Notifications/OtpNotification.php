@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 class OtpNotification extends Notification
 {
     public $otp;
-
+    
     public function __construct($otp)
     {
         $this->otp = $otp;
@@ -24,8 +24,9 @@ class OtpNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('OTP Code')
-            ->line('Your OTP is: ' . $this->otp)
-            ->line('This code expires in 5 minutes.');
+            ->subject('Rafiq App OTP Code')
+            ->view('otp', [
+                'otp' => $this->otp
+            ]);
     }
 }

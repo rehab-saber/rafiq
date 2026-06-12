@@ -45,4 +45,8 @@ class Doctor extends Authenticatable
     {
         return $this->morphMany(Complaint::class, 'sender');
     }
+    public function subscriptions()
+    {
+        return $this->hasMany(DoctorSubscription::class);
+    }
 }

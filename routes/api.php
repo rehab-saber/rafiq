@@ -24,7 +24,8 @@ use App\Http\Controllers\Api\SocialStoryController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\DoctorAvailabilityController;
-
+use App\Http\Controllers\Api\SubscriptionPlanController;
+use App\Http\Controllers\Api\DoctorSubscriptionController; 
 Route::group(
 [
     'prefix' => LaravelLocalization::setLocale(),
@@ -234,5 +235,32 @@ Route::group(
     Route::post('/AvailabilityStore',[DoctorAvailabilityController::class, 'store']);
     Route::post('/AvailabilityUpdate',[DoctorAvailabilityController::class, 'update']);
     Route::delete('/AvailabilityDelete/{id}',[DoctorAvailabilityController::class, 'delete']);
+
+    // ========================
+    // Subscription Plan routes
+    // ========================
+
+    Route::get('/SubscriptionPlanShow', [SubscriptionPlanController::class, 'index']);
+    Route::get('/SubscriptionPlanShowOne/{id}', [SubscriptionPlanController::class, 'show']);
+    Route::post('/SubscriptionPlanStore', [SubscriptionPlanController::class, 'store']);
+    Route::post('/SubscriptionPlanUpdate/{id}', [SubscriptionPlanController::class, 'update']);
+    Route::delete('/SubscriptionPlanDelete/{id}', [SubscriptionPlanController::class, 'destroy']);
+    // ========================
+    // Doctor Subscription routes
+    // ========================
+
+    Route::get('/DoctorSubscriptionShow', [DoctorSubscriptionController::class, 'index']);
+    Route::get('/DoctorSubscriptionShowOne/{id}', [DoctorSubscriptionController::class, 'show']);
+    Route::post('/DoctorSubscriptionStore', [DoctorSubscriptionController::class, 'store']);
+    Route::post('/DoctorSubscriptionUpdate/{id}', [DoctorSubscriptionController::class, 'update']);
+    Route::delete('/DoctorSubscriptionDelete/{id}', [DoctorSubscriptionController::class, 'destroy']);
+    // ========================
+    // Premium / Subscription Actions
+    // ========================
+
+    Route::post('/DoctorSubscribe', [DoctorSubscriptionController::class, 'subscribe']);
+    Route::get('/DoctorCheckPremium/{doctorId}', [DoctorSubscriptionController::class, 'checkPremium']);
+    Route::get('/SubscriptionPlansAll', [DoctorSubscriptionController::class, 'plans']);
+    Route::post('/ExpireSubscriptions', [DoctorSubscriptionController::class, 'expire']);
 
 });

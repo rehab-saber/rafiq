@@ -18,10 +18,19 @@ class TranslationController extends Controller
         'CreateChild',
         'CarsResult',
         'CarsAssesment',
-        'Home',
-        'Profile',
+        'ParentHome',
+        'ParentProfile',
         'LovasAssessment',
-        // أضف ملفات تانية هنا زي: 'home', 'profile', ...
+        'Activites',
+        'Chat',
+        'DoctorForParent1',
+        'Progress',
+        'DocHome',
+        'DocProfile',
+        'Schedule',
+        'ParentForDoc',
+        'Articles',
+        'ForgotPassword',
     ];
 
     /**
@@ -42,7 +51,7 @@ class TranslationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Unsupported language. Supported: ' . implode(', ', $this->supportedLocales),
-            ], 422);
+            ], 422, [], JSON_UNESCAPED_UNICODE);
         }
 
         // ── تحقق من اسم الملف ─────────────────────────
@@ -50,19 +59,20 @@ class TranslationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Translation file not found.',
-            ], 404);
+            ], 404, [], JSON_UNESCAPED_UNICODE);
         }
 
-        // ── حمّل الترجمة ──────────────────────────────
+        // ── تحميل الترجمة ─────────────────────────────
         App::setLocale($lang);
+
         $translations = trans($file);
 
-        // لو مش array معناه الملف مش موجود
+        // لو الملف مش موجود
         if (!is_array($translations)) {
             return response()->json([
                 'success' => false,
                 'message' => "Translation file [{$file}] not found for locale [{$lang}].",
-            ], 404);
+            ], 404, [], JSON_UNESCAPED_UNICODE);
         }
 
         return response()->json([
@@ -70,24 +80,26 @@ class TranslationController extends Controller
             'lang'    => $lang,
             'file'    => $file,
             'data'    => $translations,
-        ]);
+        ], 200, [], JSON_UNESCAPED_UNICODE);
     }
 
     /**
      * GET /api/translations?lang=ar&files[]=auth&files[]=home
-     * يرجع أكتر من ملف في request واحد (مفيد لأول فتح التطبيق)
+     * يرجع أكتر من ملف في request واحد
      */
     public function getMultiple(Request $request)
     {
         $lang  = $request->query('lang', 'ar');
-        $files = $request->query('files', $this->allowedFiles); // لو ماتحددش يرجع الكل
+
+        // لو المستخدم مبعتش files يرجع كل الملفات
+        $files = $request->query('files', $this->allowedFiles);
 
         // ── تحقق من اللغة ─────────────────────────────
         if (!in_array($lang, $this->supportedLocales)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unsupported language.',
-            ], 422);
+            ], 422, [], JSON_UNESCAPED_UNICODE);
         }
 
         App::setLocale($lang);
@@ -96,12 +108,15 @@ class TranslationController extends Controller
         $missing = [];
 
         foreach ((array) $files as $file) {
+
+            // تحقق من الملف
             if (!in_array($file, $this->allowedFiles)) {
                 $missing[] = $file;
                 continue;
             }
 
             $translations = trans($file);
+
             if (is_array($translations)) {
                 $result[$file] = $translations;
             } else {
@@ -113,7 +128,7 @@ class TranslationController extends Controller
             'success' => true,
             'lang'    => $lang,
             'data'    => $result,
-            'missing' => $missing, // ملفات مش موجودة (لو في)
-        ]);
+            'missing' => $missing,
+        ], 200, [], JSON_UNESCAPED_UNICODE);
     }
 }
