@@ -41,6 +41,10 @@ class Parents extends Authenticatable
     {
         return $this->morphMany(Complaint::class, 'sender');
     }
+    public function children()
+    {
+        return $this->hasMany(Child::class, 'parent_id');
+    }
     // ✅ Bookmark
     public function bookmarkedArticles()
     {

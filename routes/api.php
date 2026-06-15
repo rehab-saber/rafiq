@@ -263,4 +263,5 @@ Route::group(
     Route::get('/SubscriptionPlansAll', [DoctorSubscriptionController::class, 'plans']);
     Route::post('/ExpireSubscriptions', [DoctorSubscriptionController::class, 'expire']);
 
+    Route::get('/doctorpatients/{doctorId}',[DoctorController::class, 'getDoctorPatients']);
 });

@@ -49,4 +49,8 @@ class Doctor extends Authenticatable
     {
         return $this->hasMany(DoctorSubscription::class);
     }
+    public function parents()
+    {
+        return $this->hasMany(Parents::class, 'doctor_id');
+    }
 }

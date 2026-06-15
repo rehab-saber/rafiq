@@ -200,5 +200,24 @@ return [
             'sharing_toys'       => 'Sharing Toys',
         ],
     ],
+    
+    
+    // ══════════════════════════════════════════════════════════════════════════
+    // DAILY SESSION GOAL
+    // ══════════════════════════════════════════════════════════════════════════
+    'daily_session_goal' => [
+        'title'    => 'Daily Session Goal',
+        'question' => 'Choose how long the child should practice on your plan daily',
+        '15_min'      => '15 Minutes',
+        '15_min_desc' => 'Includes 2 activities from the selected therapy sections',
 
+        '30_min'      => '30 Minutes',
+        '30_min_desc' => 'Includes 3 activities from the selected therapy sections',
+ 
+        '45_min'      => '45 Minutes',
+        '45_min_desc' => 'Includes 4 activities from the selected therapy sections',
+ 
+        'save_changes' => 'Save Changes',
+    ],
+ 
 ];

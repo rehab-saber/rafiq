@@ -33,4 +33,8 @@ class Child extends Model
     {
         return $this->belongsTo(Parents::class, 'parent_id');
     }
+    public function activityAttempts()
+    {
+        return $this->hasMany(ActivityAttempt::class, 'child_id');
+    }
 }

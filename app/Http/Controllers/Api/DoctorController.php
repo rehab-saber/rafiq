@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
+use App\Models\Parents;
+use App\Models\PlanActivity;
+use App\Models\ActivityAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+
 
 class DoctorController extends Controller
 {
@@ -251,5 +255,70 @@ class DoctorController extends Controller
             'status' => 200,
             'doctor' => null
         ], 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    }
+    //////////////////////////////////////
+
+    public function getDoctorPatients($doctorId)
+    {
+        $parents = Parents::with('children')
+            ->where('doctor_id', $doctorId)
+            ->get();
+
+        $result = $parents->map(function ($parent) {
+
+            return [
+                'parent_name' => $parent->name,
+
+                'children' => $parent->children->map(function ($child) {
+
+                    // كل الأنشطة المطلوبة في الـ plan
+                    $requiredActivities = PlanActivity::whereHas('plan', function ($q) use ($child) {
+                        $q->where('child_id', $child->id);
+                    })->count();
+
+                    // الأنشطة اللي خلصها فعلاً
+                    $doneActivities = ActivityAttempt::where('child_id', $child->id)
+                        ->where('status', 'completed')
+                        ->distinct('activity_id')
+                        ->count('activity_id');
+
+                    // الحالة
+                    $status = 'active';
+
+                    if ($doneActivities < $requiredActivities) {
+                        $status = 'needs_review';
+                    }
+
+                    $lastAttempt = ActivityAttempt::with('activity')
+                        ->where('child_id', $child->id)
+                        ->latest('completed_at')
+                        ->first();
+
+                    return [
+                        'child_id' => $child->id,
+                        'child_name' => $child->name,
+                        'child_age' => $child->age,
+
+                        // 'status' => $status,
+
+                        // 'progress' => [
+                        //     'done' => $doneActivities,
+                        //     'required' => $requiredActivities
+                        // ],
+
+                        'last_activity_name' =>
+                            $lastAttempt?->activity?->title,
+
+                        'last_activity_at' =>
+                            $lastAttempt?->completed_at,
+                    ];
+                })
+            ];
+        });
+
+        return response()->json([
+            'status' => 200,
+            'data' => $result
+        ]);
     }
 }
