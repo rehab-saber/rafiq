@@ -31,6 +31,7 @@ class TranslationController extends Controller
         'ParentForDoc',
         'Articles',
         'ForgotPassword',
+        'Premium',
     ];
 
     /**
