@@ -28,6 +28,7 @@ class Doctor extends Authenticatable
         'clinic_address',
         'photo',
         'consultation_price',
+        'fcm_token',
 
     ];
 
@@ -52,5 +53,9 @@ class Doctor extends Authenticatable
     public function parents()
     {
         return $this->hasMany(Parents::class, 'doctor_id');
+    }
+    public function settings()
+    {
+        return $this->hasOne(DoctorSetting::class);
     }
 }

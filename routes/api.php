@@ -26,6 +26,8 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\DoctorAvailabilityController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\DoctorSubscriptionController; 
+use App\Http\Controllers\Api\DoctorSettingsController;
+use App\Http\Controllers\Api\DoctorFcmController;
 Route::group(
 [
     'prefix' => LaravelLocalization::setLocale(),
@@ -52,6 +54,10 @@ Route::group(
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [DoctorAuthController::class, 'logout']);
             Route::get('/profile', [DoctorAuthController::class, 'profile']);
+            /////////////settings//////////////////////
+            Route::get('notification-settings',[DoctorSettingsController::class, 'show']);
+            Route::post('notification-settings',[DoctorSettingsController::class, 'update']);
+            Route::post('/doctor/fcm-token',[DoctorFcmController::class, 'updateToken']);
         });
 
     });
