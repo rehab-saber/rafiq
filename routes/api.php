@@ -28,6 +28,9 @@ use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\DoctorSubscriptionController; 
 use App\Http\Controllers\Api\DoctorSettingsController;
 use App\Http\Controllers\Api\DoctorFcmController;
+use App\Http\Controllers\Api\ParentNotificationSettingController;
+use App\Http\Controllers\Api\ParentFcmController;
+
 Route::group(
 [
     'prefix' => LaravelLocalization::setLocale(),
@@ -54,9 +57,9 @@ Route::group(
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [DoctorAuthController::class, 'logout']);
             Route::get('/profile', [DoctorAuthController::class, 'profile']);
-            /////////////settings//////////////////////
+            ///////////notification & settings////////////
             Route::get('notification-settings',[DoctorSettingsController::class, 'show']);
-            Route::post('notification-settings',[DoctorSettingsController::class, 'update']);
+            Route::put('notification-settings',[DoctorSettingsController::class, 'update']);
             Route::post('/doctor/fcm-token',[DoctorFcmController::class, 'updateToken']);
         });
 
@@ -89,6 +92,11 @@ Route::group(
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout',  [AuthParentsController::class, 'logout']);
             Route::get('/profile',  [AuthParentsController::class, 'profile']);
+            ///////////notification & settings////////////
+            Route::get('/notification-settings',[ParentNotificationSettingController::class, 'show']);
+            Route::put('/notification-settings',[ParentNotificationSettingController::class, 'update']);
+            Route::post('/fcm-token',[ParentFcmController::class, 'updateToken']);
+
         });
     });
 

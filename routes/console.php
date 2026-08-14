@@ -17,3 +17,6 @@ Schedule::command(
 Schedule::command(
     'notifications:weekly-progress'
 )->weeklyOn(1, '09:00');
+
+Schedule::command('notifications:activity-reminders')
+    ->dailyAt('20:00');

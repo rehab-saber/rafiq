@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use App\Models\ParentNotificationSetting;
 class Parents extends Authenticatable
 {
     use HasApiTokens, Notifiable;
@@ -22,6 +22,7 @@ class Parents extends Authenticatable
         'provider_name',
         'provider_id',
         'city',
+        'fcm_token',
     ];
 
     protected $hidden = [
@@ -50,5 +51,12 @@ class Parents extends Authenticatable
     {
         return $this->belongsToMany(Article::class, 'article_bookmarks', 'parent_id', 'article_id')
                     ->withTimestamps();
+    }
+    public function notificationSettings()
+    {
+        return $this->hasOne(
+            ParentNotificationSetting::class,
+            'parent_id'
+        );
     }
 }

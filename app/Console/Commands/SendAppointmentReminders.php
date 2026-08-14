@@ -26,7 +26,7 @@ class SendAppointmentReminders extends Command
         ->whereHas('availability', function ($query) use ($tomorrow) {
 
             $query->whereDate('date', $tomorrow)
-                   ->where('is_active', true);
+                    ->where('is_active', true);
 
         })
         ->get();
