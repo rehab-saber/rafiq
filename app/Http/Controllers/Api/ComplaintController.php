@@ -153,7 +153,7 @@ class ComplaintController extends Controller
         
         Mail::raw($request->message, function ($mail) use ($request, $screenshotPath) {
 
-            $mail->to('rehabsaber3333@gmail.com')
+            $mail->to('rafiqteamsupport@gmail.com')
                 ->subject($request->subject);
 
             if ($screenshotPath) {
